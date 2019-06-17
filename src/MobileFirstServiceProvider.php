@@ -63,7 +63,7 @@ class MobileFirstServiceProvider extends ServiceProvider
     }
 
     /**
-     * Composer view when auto switch view by device enabled.
+     * Register view compose listener for auto switch view by end-user device.
      */
     protected function registerViewComposeListener(): void
     {
