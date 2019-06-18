@@ -71,9 +71,15 @@ class ViewComposer
         $path = $view->getPath();
 
         if (isset($this->resolvedPaths[$path])) {
-            $view->setPath($this->resolvedPaths[$path]);
-        } elseif ($resolvedPath = $this->resolvePath($view)) {
+            $resolvedPath = $this->resolvedPaths[$path];
+        } else {
+            $resolvedPath = $this->resolvePath($view);
+        }
+
+        if ($resolvedPath) {
             $view->setPath($this->resolvedPaths[$path] = $resolvedPath);
+        } else {
+            $this->resolvedPaths[$path] = false;
         }
     }
 
