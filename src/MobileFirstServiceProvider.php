@@ -38,8 +38,14 @@ class MobileFirstServiceProvider extends ServiceProvider
      */
     protected function registerServices(): void
     {
+        $this->app->singleton(MobileRedirect::class, function ($app) {
+            $config = $app['config']->get('mobilefirst');
+
+            return new MobileRedirect($config['mobile_url'], $config['keep_url_path'], $config['redirect_status_code']);
+        });
+
         $this->app->singleton(ViewComposer::class, function ($app) {
-            return new ViewComposer($app['agent'], $app['config']->get('mobilefirst'));
+            return new ViewComposer($app['agent'], $app['config']->get('mobilefirst.device_sub_dirs'), $app['files']);
         });
     }
 
@@ -71,5 +77,4 @@ class MobileFirstServiceProvider extends ServiceProvider
             $this->app['view']->composer('*', ViewComposer::class);
         }
     }
-
 }

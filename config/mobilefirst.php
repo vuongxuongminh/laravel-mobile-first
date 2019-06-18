@@ -1,6 +1,21 @@
 <?php
 
 return [
+    /**
+     * Your mobile site use to redirect when user not using desktop device.
+     * Note: it only affect when you registered `VXM\MobileFirst\MobileRedirect` middleware.
+     */
+    'mobile_url' => 'https://m.yoursite.com',
+
+    /**
+     * Keep url path when redirect to mobile url (ex: https://yoursite.com/abc to https://m.yoursite.com/abc).
+     */
+    'keep_url_path' => true,
+
+    /**
+     * HTTP status code will be set when redirect to mobile url.
+     */
+    'redirect_status_code' => 302,
 
     /**
      * Enable auto switch view by device type.
@@ -10,8 +25,7 @@ return [
     'auto_switch_view_by_device' => false,
 
     /**
-     * An array with key is device type and value is sub dir of it. Using to switch view to compatible view (sub-view) by user device type.
-     * It only affect when `auto_switch_view_by_device` enabled.
+     * An array with key is device type and value is sub dir of it. Use to switch view to compatible view (sub-view) by user device type.
      */
     'device_sub_dirs' => [
         //'phone' => 'phone', // switch when device is phone.

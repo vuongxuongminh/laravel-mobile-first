@@ -10,8 +10,8 @@ namespace VXM\MobileFirst;
 
 use Illuminate\View\View;
 use Jenssegers\Agent\Agent;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Illuminate\Filesystem\Filesystem;
 
 /**
  * @author Vuong Minh <vuongxuongminh@gmail.com>
@@ -31,7 +31,7 @@ class ViewComposer
      *
      * @var array
      */
-    protected $config = [];
+    protected $deviceSubDirs;
 
     /**
      * Resolved path cached.
@@ -41,15 +41,24 @@ class ViewComposer
     protected $resolvedPaths = [];
 
     /**
+     * Helpful resolve path.
+     *
+     * @var Filesystem
+     */
+    protected $files;
+
+    /**
      * Create a new ViewComposer instance.
      *
-     * @param \Jenssegers\Agent\Agent $agent
-     * @param array $config
+     * @param Agent $agent
+     * @param array $deviceSubDirs
+     * @param Filesystem $files
      */
-    public function __construct(Agent $agent, array $config)
+    public function __construct(Agent $agent, array $deviceSubDirs, Filesystem $files)
     {
         $this->agent = $agent;
-        $this->config = $config;
+        $this->deviceSubDirs = $deviceSubDirs;
+        $this->files = $files;
     }
 
     /**
@@ -59,9 +68,7 @@ class ViewComposer
      */
     public function compose(View $view): void
     {
-        if (($path = $view->getPath()) === $view->getName()) {
-            return;
-        }
+        $path = $view->getPath();
 
         if (isset($this->resolvedPaths[$path])) {
             $view->setPath($this->resolvedPaths[$path]);
@@ -73,12 +80,12 @@ class ViewComposer
     /**
      * Resolve path by end-user device.
      *
-     * @param \Illuminate\View\View $view
+     * @param View $view
      * @return string|null
      */
     protected function resolvePath(View $view): ?string
     {
-        foreach ($this->config['device_sub_dirs'] as $device => $subDir) {
+        foreach ($this->deviceSubDirs as $device => $subDir) {
             if ($this->isDevice($device) && $path = $this->findSubPath($view, $subDir)) {
                 return $path;
             }
@@ -108,7 +115,7 @@ class ViewComposer
     }
 
     /**
-     * Find sub path by view and sub dir given.
+     * Find sub path.
      *
      * @param View $view
      * @param string $subDir
@@ -116,12 +123,30 @@ class ViewComposer
      */
     protected function findSubPath(View $view, string $subDir): ?string
     {
-        [$base, $name] = $this->parseNameSegments($view->getName());
-        $name = $base.'.'.$subDir.'.'.$name;
+        if ($view->getName() !== $view->getPath()) {
+            return $this->findSubViewPath($view, $subDir);
+        } else {
+            return $this->findSubNativePath($view, $subDir);
+        }
+    }
+
+    /**
+     * Find sub view path.
+     *
+     * @param View $view
+     * @param string $subDir
+     * @return string|null
+     */
+    protected function findSubViewPath(View $view, string $subDir): ?string
+    {
+        $rawPath = str_replace('.', '/', $view->getName());
+        $base = $this->files->dirname($rawPath);
+        $name = $this->files->name($rawPath);
+        $path = ltrim($base.'.'.$subDir.'.'.$name, '.');
         $factory = $view->getFactory();
 
         try {
-            $path = $factory->getFinder()->find($name);
+            $path = $factory->getFinder()->find($path);
         } catch (InvalidArgumentException $exception) {
             return null;
         }
@@ -134,19 +159,22 @@ class ViewComposer
     }
 
     /**
-     * Get the segments of a view name given.
+     * Find sub native path.
      *
-     * @param string $name
-     * @return array|string[]
+     * @param View $view
+     * @param string $subDir
+     * @return string|null
      */
-    protected function parseNameSegments(string $name): array
+    protected function findSubNativePath(View $view, string $subDir): ?string
     {
-        if (! Str::contains($name, '.')) {
-            return ['', $name];
+        $path = $view->getPath();
+        $dirname = $this->files->dirname($path);
+        $basename = $this->files->basename($path);
+
+        if ($this->files->exists($path = $dirname.'/'.$subDir.'/'.$basename)) {
+            return $path;
         }
 
-        $name = str_replace('.', '/', $name);
-
-        return [dirname($name), basename($name)];
+        return null;
     }
 }
