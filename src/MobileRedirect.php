@@ -19,16 +19,22 @@ use Illuminate\Support\Facades\Redirect;
 class MobileRedirect
 {
     /**
+     * Mobile base url.
+     *
      * @var string
      */
     protected $baseUrl;
 
     /**
+     * Keep url path when redirect to `baseUrl`.
+     *
      * @var bool
      */
     protected $keepPath;
 
     /**
+     * Redirect status code.
+     *
      * @var int
      */
     protected $statusCode;
