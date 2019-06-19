@@ -14,7 +14,6 @@ namespace VXM\MobileFirst\Tests;
  */
 class ViewComposerNotAffectTest extends TestCase
 {
-
     public function testNormalRender()
     {
         $result = (string) $this->app['view']->make('test');

@@ -9,8 +9,8 @@
 namespace VXM\MobileFirst;
 
 use Closure;
-use Jenssegers\Agent\Agent;
 use Illuminate\Support\Arr;
+use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Redirect;
 
 /**

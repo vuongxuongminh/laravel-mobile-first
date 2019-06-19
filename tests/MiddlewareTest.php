@@ -27,7 +27,6 @@ class MiddlewareTest extends TestCase
     protected function setupRoutes(): void
     {
         Route::get('/', function () {
-
             return 'hello world';
         });
     }
