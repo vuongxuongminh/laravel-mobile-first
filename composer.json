@@ -36,6 +36,9 @@
     "scripts": {
         "test": "vendor/bin/phpunit"
     },
+    "suggest": {
+        "riverskies/laravel-mobile-detect": "For detect device in blade environment."
+    },
     "config": {
         "sort-packages": true
     },
