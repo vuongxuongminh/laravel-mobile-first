@@ -27,7 +27,7 @@ class ViewComposer
     protected $agent;
 
     /**
-     * Composer config.
+     * An array with key's device type mapping with sub dir of it.
      *
      * @var array
      */
