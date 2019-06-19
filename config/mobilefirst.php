@@ -20,7 +20,7 @@ return [
     /**
      * HTTP request method should be redirect to mobile url.
      */
-    'redirect_methods' => ['HEAD', 'GET'],
+    'redirect_methods' => ['OPTIONS', 'GET'],
 
     /**
      * Enable auto switch view by device type.
