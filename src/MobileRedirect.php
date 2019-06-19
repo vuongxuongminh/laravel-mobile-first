@@ -65,7 +65,7 @@ class MobileRedirect
         $agent = new Agent($request->server());
 
         if (! $agent->isDesktop()) {
-            Redirect::to($this->getUrlFor($request), $this->statusCode);
+            return Redirect::to($this->getUrlFor($request), $this->statusCode);
         }
 
         return $next($request);
