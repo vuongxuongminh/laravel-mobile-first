@@ -18,6 +18,11 @@ return [
     'redirect_status_code' => 302,
 
     /**
+     * HTTP request method should be redirect to mobile url.
+     */
+    'redirect_methods' => ['HEAD', 'GET'],
+
+    /**
      * Enable auto switch view by device type.
      * When enabled, the system auto switch view to compatible view (sub-view) by user device type (ex: 'index.blade.php' => 'mobile/index.blade.php'),
      * compatible view will be find on `device_sub_dirs`. If not found, not affect.

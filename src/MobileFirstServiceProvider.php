@@ -41,7 +41,7 @@ class MobileFirstServiceProvider extends ServiceProvider
         $this->app->singleton(MobileRedirect::class, function ($app) {
             $config = $app['config']->get('mobilefirst');
 
-            return new MobileRedirect($config['mobile_url'], $config['keep_url_path'], $config['redirect_status_code']);
+            return new MobileRedirect($config['mobile_url'], $config['keep_url_path'], $config['redirect_status_code'], $config['redirect_methods']);
         });
 
         $this->app->singleton(ViewComposer::class, function ($app) {

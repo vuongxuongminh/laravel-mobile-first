@@ -10,6 +10,7 @@ namespace VXM\MobileFirst;
 
 use Closure;
 use Jenssegers\Agent\Agent;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redirect;
 
 /**
@@ -33,6 +34,13 @@ class MobileRedirect
     protected $keepPath;
 
     /**
+     * Methods should redirect.
+     *
+     * @var array
+     */
+    protected $methods;
+
+    /**
      * Redirect status code.
      *
      * @var int
@@ -46,9 +54,10 @@ class MobileRedirect
      * @param bool $keepPath
      * @param int $statusCode
      */
-    public function __construct(string $baseUrl, bool $keepPath, int $statusCode)
+    public function __construct(string $baseUrl, bool $keepPath, int $statusCode, array $methods)
     {
         $this->baseUrl = $baseUrl;
+        $this->methods = $methods;
         $this->keepPath = $keepPath;
         $this->statusCode = $statusCode;
     }
@@ -62,9 +71,7 @@ class MobileRedirect
      */
     public function handle($request, Closure $next)
     {
-        $agent = new Agent($request->server());
-
-        if (! $agent->isDesktop()) {
+        if ($this->shouldRedirect($request)) {
             return Redirect::to($this->getUrlFor($request), $this->statusCode);
         }
 
@@ -82,9 +89,26 @@ class MobileRedirect
         $url = $this->baseUrl;
 
         if ($this->keepPath) {
-            $url .= $request->getPathInfo();
+            $url = rtrim($url).$request->getPathInfo();
+
+            if ($query = Arr::query($request->query())) {
+                $url .= '?'.$query;
+            }
         }
 
         return $url;
+    }
+
+    /**
+     * Return should redirect or not by request given.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return bool
+     */
+    protected function shouldRedirect($request): bool
+    {
+        $agent = new Agent($request->server());
+
+        return ! $agent->isDesktop() && in_array($request->getMethod(), $this->methods);
     }
 }

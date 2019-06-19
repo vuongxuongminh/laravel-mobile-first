@@ -32,9 +32,9 @@ class MiddlewareTest extends TestCase
         });
     }
 
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($application)
     {
-        $app->make(KernelContract::class)->pushMiddleware(MobileRedirect::class);
+        $application->make(KernelContract::class)->pushMiddleware(MobileRedirect::class);
     }
 
     public function testDesktopNotRedirect()
@@ -51,5 +51,14 @@ class MiddlewareTest extends TestCase
         ]);
         $this->assertContains('Redirecting to', $response->content());
         $this->assertNotFalse($response->headers->get('location', false));
+    }
+
+    public function testMobileShouldNotRedirect()
+    {
+        $response = $this->post('/', [
+            'HTTP_USER_AGENT' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        ]);
+        $this->assertNotContains('Redirecting to', $response->content());
+        $this->assertFalse($response->headers->get('location', false));
     }
 }
