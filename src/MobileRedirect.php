@@ -79,7 +79,20 @@ class MobileRedirect
     }
 
     /**
-     * Get url for Request.
+     * Return should redirect or not by request given.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return bool
+     */
+    protected function shouldRedirect($request): bool
+    {
+        $agent = new Agent($request->server());
+
+        return ! $agent->isDesktop() && in_array($request->getMethod(), $this->methods);
+    }
+
+    /**
+     * Get url for request.
      *
      * @param \Illuminate\Http\Request $request
      * @return string
@@ -99,16 +112,4 @@ class MobileRedirect
         return $url;
     }
 
-    /**
-     * Return should redirect or not by request given.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return bool
-     */
-    protected function shouldRedirect($request): bool
-    {
-        $agent = new Agent($request->server());
-
-        return ! $agent->isDesktop() && in_array($request->getMethod(), $this->methods);
-    }
 }
