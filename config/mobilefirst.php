@@ -15,7 +15,7 @@ return [
     /*
      * HTTP status code will be set when redirect to mobile url.
      */
-    'redirect_status_code' => 302,
+    'redirect_status_code' => 301,
 
     /*
      * HTTP request method should be redirect to mobile url.
