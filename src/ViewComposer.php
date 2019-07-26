@@ -50,9 +50,9 @@ class ViewComposer
     /**
      * Create a new ViewComposer instance.
      *
-     * @param Agent $agent
-     * @param array $deviceSubDirs
-     * @param Filesystem $files
+     * @param  Agent  $agent
+     * @param  array  $deviceSubDirs
+     * @param  Filesystem  $files
      */
     public function __construct(Agent $agent, array $deviceSubDirs, Filesystem $files)
     {
@@ -64,17 +64,12 @@ class ViewComposer
     /**
      * Compose given View instance.
      *
-     * @param View $view
+     * @param  View  $view
      */
     public function compose(View $view): void
     {
         $path = $view->getPath();
-
-        if (isset($this->resolvedPaths[$path])) {
-            $resolvedPath = $this->resolvedPaths[$path];
-        } else {
-            $resolvedPath = $this->resolvePath($view);
-        }
+        $resolvedPath = $this->resolvedPaths[$path] ?? $this->resolvePath($view);
 
         if ($resolvedPath) {
             $view->setPath($this->resolvedPaths[$path] = $resolvedPath);
@@ -86,7 +81,7 @@ class ViewComposer
     /**
      * Resolve path by end-user device.
      *
-     * @param View $view
+     * @param  View  $view
      * @return string|null
      */
     protected function resolvePath(View $view): ?string
@@ -123,8 +118,8 @@ class ViewComposer
     /**
      * Find sub path.
      *
-     * @param View $view
-     * @param string $subDir
+     * @param  View  $view
+     * @param  string  $subDir
      * @return string|null
      */
     protected function findSubPath(View $view, string $subDir): ?string
@@ -139,8 +134,8 @@ class ViewComposer
     /**
      * Find sub view path.
      *
-     * @param View $view
-     * @param string $subDir
+     * @param  View  $view
+     * @param  string  $subDir
      * @return string|null
      */
     protected function findSubViewPath(View $view, string $subDir): ?string
@@ -167,8 +162,8 @@ class ViewComposer
     /**
      * Find sub native path.
      *
-     * @param View $view
-     * @param string $subDir
+     * @param  View  $view
+     * @param  string  $subDir
      * @return string|null
      */
     protected function findSubNativePath(View $view, string $subDir): ?string
